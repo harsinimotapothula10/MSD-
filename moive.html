@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Mate</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background: #222;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        nav a {
+            color: white;
+            margin-left: 15px;
+            text-decoration: none;
+        }
+
+        section {
+            padding: 20px;
+            background: white;
+            margin: 20px;
+            border-radius: 8px;
+        }
+
+        .group-form, .invite-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        input, select, button {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background: #ff9800;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #e68a00;
+        }
+
+        .stats-cards {
+            display: flex;
+            gap: 15px;
+        }
+
+        .card {
+            background: #f1f1f1;
+            padding: 20px;
+            flex: 1;
+            text-align: center;
+            border-radius: 8px;
+        }
+
+        .snacks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            padding: 20px;
+        }
+
+        .snack-card {
+            background: #fff3e0;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            font-size: 18px;
+        }
+
+        /* Modal Styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            padding-top: 100px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: auto;
+            padding: 20px;
+            width: 50%;
+            border-radius: 8px;
+        }
+
+        .close {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <h1>🍿 Movie Mate</h1>
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#snacks">Snacks</a>
+        </nav>
+    </header>
+
+    <!-- Group Management -->
+    <section id="home" class="group-section">
+        <h2>Group Management</h2>
+        <div class="group-form">
+            <input type="text" id="groupName" placeholder="Enter group name">
+            <button onclick="createGroup()">Create Group</button>
+        </div>
+        <ul id="groupList"></ul>
+    </section>
+
+    <!-- Invitations -->
+    <section class="invite-section">
+        <h2>Member Invitations</h2>
+        <div class="invite-form">
+            <input type="email" id="inviteEmail" placeholder="Enter member email">
+            <select id="inviteStatus">
+                <option value="invited">Invited</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="declined">Declined</option>
+            </select>
+            <button onclick="addMember()">Add Member</button>
+        </div>
+        <ul id="memberList"></ul>
+    </section>
+
+    <!-- Statistics -->
+    <section class="stats-section">
+        <h2>Group Statistics</h2>
+        <div class="stats-cards">
+            <div class="card">
+                <h3>Movies Watched</h3>
+                <p id="moviesWatched">0</p>
+            </div>
+            <div class="card">
+                <h3>Upcoming Bookings</h3>
+                <p id="upcomingBookings">0</p>
+            </div>
+            <div class="card">
+                <h3>Member Activity</h3>
+                <p id="memberActivity">0</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Snacks -->
+    <section id="snacks">
+        <h2>Snacks Menu</h2>
+        <div class="snacks-grid">
+            <div class="snack-card">🍕 Pizza</div>
+            <div class="snack-card">🍿 Popcorn</div>
+            <div class="snack-card">🥤 Soda</div>
+            <div class="snack-card">🍔 Burger</div>
+            <div class="snack-card">🍫 Chocolate</div>
+            <div class="snack-card">🌭 Hotdog</div>
+        </div>
+    </section>
+
+    <!-- Modals -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span onclick="closeModal()" class="close">&times;</span>
+            <h2>Group Details</h2>
+            <p id="modalText">Details will appear here...</p>
+        </div>
+    </div>
+
+    <script>
+        // Group Creation
+        function createGroup() {
+            let groupName = document.getElementById("groupName").value;
+            if (groupName.trim() === "") {
+                alert("Please enter a group name.");
+                return;
+            }
+            let li = document.createElement("li");
+            li.innerHTML = `${groupName} <button onclick="viewGroup('${groupName}')">View</button>`;
+            document.getElementById("groupList").appendChild(li);
+            document.getElementById("groupName").value = "";
+        }
+
+        // Add Member
+        function addMember() {
+            let email = document.getElementById("inviteEmail").value;
+            let status = document.getElementById("inviteStatus").value;
+            if (email.trim() === "") {
+                alert("Please enter an email.");
+                return;
+            }
+            let li = document.createElement("li");
+            li.textContent = `${email} - ${status}`;
+            document.getElementById("memberList").appendChild(li);
+            document.getElementById("inviteEmail").value = "";
+        }
+
+        // View Group (Modal)
+        function viewGroup(groupName) {
+            document.getElementById("modalText").innerText = `Details for group: ${groupName}`;
+            document.getElementById("modal").style.display = "block";
+        }
+
+        // Close Modal
+        function closeModal() {
+            document.getElementById("modal").style.display = "none";
+        }
+
+        // Close modal on outside click
+        window.onclick = function(event) {
+            if (event.target == document.getElementById("modal")) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
